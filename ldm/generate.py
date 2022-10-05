@@ -566,15 +566,21 @@ class Generate:
 
         return model
 
-    def _load_img(self, path, width, height, fit=False):
-        assert os.path.exists(path), f'>> {path}: File not found'
+    def _load_img(self, image, width, height, fit=False):
+        if isinstance(image, str):
+            assert os.path.exists(image), f'>> {image}: File not found'
 
-        #        with Image.open(path) as img:
-        #            image = img.convert('RGBA')
-        image = Image.open(path)
-        print(
-            f'>> loaded input image of size {image.width}x{image.height} from {path}'
-        )
+            #        with Image.open(path) as img:
+            #            image = img.convert('RGBA')
+            image = Image.open(image)
+            print(
+                f'>> loaded input image of size {image.width}x{image.height} from {image}'
+            )
+        elif image.__class__.__name__ == "QImage":
+            image = Image.fromqimage(image)
+        elif image.__class__.__name__ == "QPixmap":
+            image = Image.fromqpixmap(image)
+
         if fit:
             image = self._fit_image(image,(width,height))
         else:
