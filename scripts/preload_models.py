@@ -45,6 +45,25 @@ try:
 except ModuleNotFoundError:
     pass
 
+def download(url, output):
+    import requests
+    import tqdm
+
+    response = requests.get(url, stream=True)
+    total_size_in_bytes= int(response.headers.get('content-length', 0))
+    block_size = 1024 #1 Kibibyte
+    progress_bar = tqdm(total=total_size_in_bytes, unit='iB', unit_scale=True)
+    if not os.path.exists(os.path.dirname(output)):
+        os.makedirs(os.path.dirname(output), exist_ok=True)
+
+    with open(output, 'wb') as file:
+        for data in response.iter_content(block_size):
+            progress_bar.update(len(data))
+            file.write(data)
+    progress_bar.close()
+    if total_size_in_bytes != 0 and progress_bar.n != total_size_in_bytes:
+        raise Exception("ERROR, something went wrong during download")
+
 if gfpgan:
     print('Loading models from RealESRGAN and facexlib')
     try:
@@ -82,5 +101,32 @@ if gfpgan:
     except Exception:
         import traceback
 
-        print('Error loading GFPGAN:')
+        print('Error loading ESRGAN:')
         print(traceback.format_exc())
+
+    print('Loading models from GFPGAN')
+    for model in (
+            [
+                'https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.4.pth',
+                'src/gfpgan/experiments/pretrained_models/GFPGANv1.4.pth'
+            ],
+            [
+                'https://github.com/xinntao/facexlib/releases/download/v0.1.0/detection_Resnet50_Final.pth',
+                './gfpgan/weights/detection_Resnet50_Final.pth'
+            ],
+            [
+                'https://github.com/xinntao/facexlib/releases/download/v0.2.2/parsing_parsenet.pth',
+                './gfpgan/weights/parsing_parsenet.pth'
+            ],
+    ):
+        model_url, model_dest  = model
+        try:
+            model_dest = os.path.join(os.path.dirname(__file__), "..", model_dest)
+            if not os.path.exists(model_dest):
+                print(f'Downloading gfpgan model file {model_url}...',end='')
+                download(model_url, model_dest)
+                print('...success')
+        except Exception:
+            import traceback
+            print('Error loading GFPGAN:')
+            print(traceback.format_exc())
