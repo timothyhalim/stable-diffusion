@@ -47,7 +47,7 @@ except ModuleNotFoundError:
 
 def download(url, output):
     import requests
-    import tqdm
+    from tqdm import tqdm
 
     response = requests.get(url, stream=True)
     total_size_in_bytes= int(response.headers.get('content-length', 0))
