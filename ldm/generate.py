@@ -255,7 +255,7 @@ class Generate:
             embiggen       =    None,
             embiggen_tiles =    None,
             # these are specific to GFPGAN/ESRGAN
-            facetool         = None,
+            facetool         = 'gfpgan',
             gfpgan_strength  = 0,
             codeformer_fidelity = None,
             save_original    = False,
