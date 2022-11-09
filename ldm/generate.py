@@ -34,6 +34,7 @@ from ldm.dream.image_util import InitImageResizer
 from ldm.dream.devices import choose_torch_device, choose_precision
 from ldm.dream.conditioning import get_uc_and_c
 
+from ldm.dream.restoration.gfpgan import GFPGAN
 
 
 def fix_func(orig):
@@ -140,7 +141,7 @@ class Generate:
             # these are deprecated; if present they override values in the conf file
             weights               = None,
             config                = None,
-            gfpgan=None,
+            gfpgan=GFPGAN(),
             codeformer=None,
             esrgan=None,
             free_gpu_mem=False,
@@ -155,7 +156,7 @@ class Generate:
         self.steps          = 50
         self.cfg_scale      = 7.5
         self.sampler_name   = sampler_name
-        self.ddim_eta       = 0.0    # same seed always produces same image
+        self.ddim_eta       = ddim_eta    # same seed always produces same image
         self.precision      = precision
         self.strength       = 0.75
         self.seamless       = False
