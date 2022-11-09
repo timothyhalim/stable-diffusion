@@ -843,6 +843,10 @@ class Generate:
             print(
                 f'>> loaded input image of size {image.width}x{image.height} from {img}'
             )
+        elif image.__class__.__name__ == "QImage":
+            image = Image.fromqimage(image)
+        elif image.__class__.__name__ == "QPixmap":
+            image = Image.fromqpixmap(image)
         else:
             image = Image.open(img)
             print(
