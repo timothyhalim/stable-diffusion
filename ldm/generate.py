@@ -35,6 +35,8 @@ from ldm.dream.devices import choose_torch_device, choose_precision
 from ldm.dream.conditioning import get_uc_and_c
 
 from ldm.dream.restoration.gfpgan import GFPGAN
+from ldm.dream.restoration.realesrgan import ESRGAN
+from ldm.dream.restoration.codeformer import CodeFormerRestoration
 
 
 def fix_func(orig):
@@ -142,8 +144,8 @@ class Generate:
             weights               = None,
             config                = None,
             gfpgan=GFPGAN(),
-            codeformer=None,
-            esrgan=None,
+            codeformer=CodeFormerRestoration(),
+            esrgan=ESRGAN(),
             free_gpu_mem=False,
     ):
         models              = OmegaConf.load(conf)
