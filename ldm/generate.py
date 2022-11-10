@@ -707,7 +707,7 @@ class Generate:
             else:
                 r[0] = image
 
-    def upscale(self, image, seed, upscale):
+    def upscale(self, image, seed, upscale, image_callback=None, prefix=None):
         image = self._load_img(image)
         if self.esrgan is not None:
             if len(upscale) < 2:
@@ -717,6 +717,9 @@ class Generate:
         else:
             print(">> ESRGAN is disabled. Image not upscaled.")
 
+        if image_callback is not None:
+            image_callback(image, seed, upscaled=True, use_prefix=prefix)
+        return image
 
     def upscale_and_reconstruct(self,
                                 image_list,
