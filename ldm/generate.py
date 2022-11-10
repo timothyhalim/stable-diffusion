@@ -707,6 +707,17 @@ class Generate:
             else:
                 r[0] = image
 
+    def upscale(self, image, seed, upscale):
+        image = self._load_img(image)
+        if self.esrgan is not None:
+            if len(upscale) < 2:
+                upscale.append(0.75)
+            image = self.esrgan.process(
+                image, upscale[1], seed, int(upscale[0]))
+        else:
+            print(">> ESRGAN is disabled. Image not upscaled.")
+
+
     def upscale_and_reconstruct(self,
                                 image_list,
                                 facetool      = 'gfpgan',
